@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Inclass Week8</title>
+        <script type="text/javascript" src="../d3.js"></script>
+    </head>
+    <body>
+		<div id="commuting"></div>
+        <script type="text/javascript">
+            // Your beautiful D3 code will go 
+            d3.csv("inClassSurveyData.csv",function(data){
+                drawCommute(data)
+            })
+			
+		    function drawCommute(data){
+    
+		        var w = 800
+		        var h = 420
+		        var padding = 40
+		        var r = 10
+	
+		        var svg = d3.select("#commuting")
+		            .append("svg")
+		            .attr("width",w)
+		            .attr("height",h)
+	
+        var xScale = d3.scaleLinear()
+        .domain([0,90])  //you put the min and max value of data here
+        .range([0,w-padding])//you put the min and max value you want to scale to here, in our case the entire width minus a margin so nothing gets cut off.
+				
+			//Define X axis	
+var xAxis = d3.axisBottom()
+				  .scale(xScale)
+				  .ticks(10);
+				
+			   
+			   
+	        svg.selectAll("circle")
+	            .data(data)
+	            .enter()
+	            .append("circle")
+	            .attr("cx",function(d,i){
+	                //then we apply the scale 
+	                //we apply the x scale to the commute value and return it
+	                return  xScale(d.commute)
+	            })
+	            .attr("cy",h/3)//set y of circles at half of height
+	            .attr("r",r)
+	            .style("fill","pink")
+	            .style("opacity",.3)
+				   
+ 			//Create labels
+ 			svg.selectAll("text")
+ 			   .data(data)
+ 			   .enter()
+ 			   .append("text")
+ 			   .text(function(d,i) {
+ 			   		return  d.commute
+ 			   })
+ 			   .attr("x", function(d,i) {
+ 			   		 return  xScale(d.commute)
+ 			   })
+			   .attr("y", h/3)
+ 			   .attr("font-family", "sans-serif")
+ 			   .attr("font-size", "1px")
+ 			   .attr("fill", "grey");
+			
+			
+			//Create X axis
+			svg.append("g")
+				.attr("class", "axis")
+				.attr("transform", "translate(0," + (h - padding*4) + ")")
+				.call(xAxis);
+				
+			}
+        </script>
+    </body>
+</html>
